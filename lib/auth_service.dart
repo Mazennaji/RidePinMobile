@@ -10,8 +10,8 @@ class AuthService {
         data: {'email': email, 'password': password},
       );
       final token = response.data['token'];
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('authToken', token);
+      final pref = await SharedPreferences.getInstance();
+      await pref.setString('authToken', token);
       return true;
     } catch (e) {
       print('Login failed: $e');
@@ -21,14 +21,14 @@ class AuthService {
 
   static Future<bool> logout() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('authToken');
+      final pref = await SharedPreferences.getInstance();
+      final token = pref.getString('authToken');
       if (token != null) {
         await ApiService.dio.post(
           '/logout',
           options: Options(headers: {'Authorization': 'Bearer $token'}),
         );
-        await prefs.remove('authToken');
+        await pref.remove('authToken');
       }
       return true;
     } catch (e) {
