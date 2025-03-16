@@ -1,46 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:ridepin_app/forgot_password_service.dart';
 import 'auth_service.dart';
 
-class LoginScreen extends StatefulWidget {
+class ForgotPasswordScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _ForgotPasswordScreenState createState() => _ForgotPasswordScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
   String _errorMessage = '';
+  String _successMessage = '';
 
-  Future<void> _login() async {
+  Future<void> _resetPassword() async {
     setState(() {
       _isLoading = true;
       _errorMessage = '';
+      _successMessage = '';
     });
 
     final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
 
-    if (email.isEmpty || password.isEmpty) {
+    if (email.isEmpty) {
       setState(() {
-        _errorMessage = 'Please fill in all fields.';
+        _errorMessage = 'Please enter your email address.';
         _isLoading = false;
       });
       return;
     }
 
-    final success = await AuthService.login(email, password);
+    final success = await AuthService.resetPassword(email);
 
     setState(() {
       _isLoading = false;
     });
 
     if (success) {
-      Navigator.pushReplacementNamed(context, '/home');
+      setState(() {
+        _successMessage = 'Password reset instructions sent to your email.';
+      });
     } else {
       setState(() {
-        _errorMessage = 'Login failed. Please check your credentials.';
+        _errorMessage = 'Failed to reset password. Please try again.';
       });
     }
   }
@@ -48,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login')),
+      appBar: AppBar(title: Text('Forgot Password')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -62,41 +63,21 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               keyboardType: TextInputType.emailAddress,
             ),
-            SizedBox(height: 16),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock),
-              ),
-              obscureText: true,
-            ),
             SizedBox(height: 20),
             if (_errorMessage.isNotEmpty)
               Text(_errorMessage, style: TextStyle(color: Colors.red)),
+            if (_successMessage.isNotEmpty)
+              Text(_successMessage, style: TextStyle(color: Colors.green)),
             SizedBox(height: 20),
             _isLoading
                 ? CircularProgressIndicator()
                 : ElevatedButton(
-                  onPressed: _login,
-                  child: Text('Login'),
+                  onPressed: _resetPassword,
+                  child: Text('Reset Password'),
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(double.infinity, 50),
                   ),
                 ),
-            SizedBox(height: 10),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ForgotPasswordScreen(),
-                  ),
-                );
-              },
-              child: Text('Forgot Password?'),
-            ),
           ],
         ),
       ),

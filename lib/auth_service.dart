@@ -36,4 +36,17 @@ class AuthService {
       return false;
     }
   }
+
+  static Future<bool> resetPassword(String email) async {
+    try {
+      final response = await ApiService.dio.post(
+        '/forgot-password',
+        data: {'email': email},
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      print('Password reset failed: $e');
+      return false;
+    }
+  }
 }
