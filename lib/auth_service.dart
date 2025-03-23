@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'api_service.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class AuthService {
   static Future<bool> login(String email, String password) async {
@@ -47,6 +49,20 @@ class AuthService {
     } catch (e) {
       print('Password reset failed: $e');
       return false;
+    }
+  }
+
+  final String baseUrl = 'https://your-api-url.com';
+
+  Future<void> register(String name, String email, String password) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/register'),
+      body: json.encode({'name': name, 'email': email, 'password': password}),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Registration failed');
     }
   }
 }
