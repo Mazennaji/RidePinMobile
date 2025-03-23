@@ -3,8 +3,16 @@ import 'login_screen.dart';
 import 'dashboard_screen.dart';
 import 'profile_screen.dart';
 import 'settings_screen.dart';
+import 'local_storage_service.dart'; // Import the LocalStorageService
 
-void main() {
+void main() async {
+  // Ensure Flutter binding is initialized
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize LocalStorageService
+  await LocalStorageService().init();
+
+  // Run the app
   runApp(MyApp());
 }
 
