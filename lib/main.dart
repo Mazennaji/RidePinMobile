@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'login_screen.dart';
+import 'login_screen.dart'; // Import the LoginScreen
 import 'ride_service.dart'; // Import the RideService
 import 'package:provider/provider.dart';
 import 'dashboard_screen.dart';
@@ -7,7 +7,6 @@ import 'profile_screen.dart';
 import 'settings_screen.dart';
 import 'local_storage_service.dart'; // Import the LocalStorageService
 import 'payment_service.dart'; // Import the PaymentService
-import 'login_screen.dart'; // Import the LoginScreen
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
