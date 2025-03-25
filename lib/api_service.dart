@@ -1,12 +1,21 @@
 import 'package:dio/dio.dart';
 
 class ApiService {
-  static final Dio _dio = Dio(
+  static final Dio dio = Dio(
     BaseOptions(
-      baseUrl: 'http://127.0.0.1:8000/api',
-      headers: {'Accept': 'application/json'},
+      baseUrl: 'https://api.ridepin.com',
+      connectTimeout: Duration(milliseconds: 5000),
     ),
   );
 
-  static Dio get dio => _dio;
+  Future<Response> register(Map<String, dynamic> data) async {
+    return await dio.post('/register', data: data);
+  }
+
+  Future<Response> login(String email, String password) async {
+    return await dio.post(
+      '/login',
+      data: {'email': email, 'password': password},
+    );
+  }
 }
