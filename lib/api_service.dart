@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class ApiService {
   static final cacheStore = MemCacheStore();
@@ -37,5 +39,51 @@ class ApiService {
       ),
     );
     _dio.interceptors.add(LogInterceptor());
+  }
+}
+
+final String _baseUrl = 'https://your-api-url.com/api';
+
+Future<Map<String, dynamic>> post(
+  String endpoint,
+  Map<String, dynamic> data,
+) async {
+  final response = await http.post(
+    Uri.parse('$_baseUrl/$endpoint'),
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode(data),
+  );
+
+  if (response.statusCode == 200) {
+    return jsonDecode(response.body);
+  } else {
+    throw Exception('Failed to post data: ${response.body}');
+  }
+}
+
+Future<Map<String, dynamic>> simulatePost(
+  String endpoint,
+  Map<String, dynamic> data,
+) async {
+  // Replace with actual API call logic
+  await Future.delayed(Duration(seconds: 1)); // Simulate network delay
+  return {'ride_id': '12345'}; // Simulated response
+}
+
+Future<Map<String, dynamic>> postRequest(
+  String endpoint,
+  Map<String, dynamic> data,
+) async {
+  final url = Uri.parse('$_baseUrl/$endpoint');
+  final response = await http.post(
+    url,
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode(data),
+  );
+
+  if (response.statusCode == 200) {
+    return jsonDecode(response.body);
+  } else {
+    throw Exception('Failed to post data: ${response.body}');
   }
 }
